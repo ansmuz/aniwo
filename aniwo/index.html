@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aniwo</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+  <nav>
+    <div class="navbar">
+      <div class="input-container">
+        <input type="text" id="searchInput" required>
+        <label for="searchInput" class="label">Search</label>
+        <div class="underline"></div>
+      </div>
+      <h2>Aniwo</h2>
+      <div class="lang-toggle">
+        <button id="langEN">EN</button>
+        <span class="separator">|</span>
+        <button id="langJP">JP</button>
+        <span class="separator">|</span>
+        <button id="langRM">RM</button>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+  <div class="row" id="anime-container"></div>
+
+
+  <script>
+    const container = document.getElementById("anime-container");
+    const searchInput = document.getElementById("searchInput");
+
+    // ✅ Global language state
+    let currentLang = "EN";
+    let lastData = []; // last fetched/search data ko store karenge
+
+    function displayAnime(animes) {
+      container.innerHTML = "";
+      lastData = animes; // store last data for re-render on toggle
+
+      animes.forEach(anime => {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("anime-wrapper");
+
+        // ✅ Title language check
+        let animeTitle;
+        if (currentLang === "EN") {
+          animeTitle = anime.title_english || anime.title || "Untitled";
+        } else if (currentLang === "JP") {
+          animeTitle = anime.title_japanese || anime.title || "無題";
+        } else {
+          animeTitle = anime.title || "Untitled";
+        }
+
+        const card = document.createElement("div");
+        card.classList.add("anime-card");
+        card.innerHTML = `
+        <div class="anime-img">
+          <img src="${anime.images.jpg.image_url}" alt="${animeTitle}">
+          <div class="anime-episode-overlay">${anime.episodes ?? "?"} Ep</div>
+        </div>
+      `;
+
+        // ✅ Title outside
+        const titleDiv = document.createElement("div");
+        titleDiv.classList.add("anime-title-outside");
+        titleDiv.innerHTML = `<h3>${animeTitle}</h3>`;
+
+        // ✅ Type & duration
+        const metaDiv = document.createElement("div");
+        metaDiv.classList.add("anime-meta");
+
+        const type = anime.type || "Unknown";
+        const duration = anime.duration
+          ? anime.duration.replace(" per ep", "").replace(" per episode", "")
+          : (anime.episodes ? `${anime.episodes} ep` : "? ep");
+
+        metaDiv.innerHTML = `
+        <span class="anime-type">${type}</span>
+        <span class="anime-duration">${duration}</span>
+      `;
+
+        // ✅ Detail box
+        const detail = document.createElement("div");
+        detail.classList.add("anime-detail-box");
+
+        const genres = anime.genres.map(g => `<span>${g.name}</span>`).join(" ");
+
+        detail.innerHTML = `
+        <h3 class="anime-name">${animeTitle}</h3>
+        <div class="score-badge">⭐ ${anime.score ?? "N/A"}</div>
+        <div class="genres"><strong>Genre:</strong>${genres}</div>
+        <p class="year"><strong>Year:</strong> ${anime.year ?? "?"}</p>
+        <p class="synopsis">${anime.synopsis ? anime.synopsis.slice(0, 200) + "..." : "No synopsis available."}</p>
+      `;
+
+        wrapper.appendChild(card);
+        wrapper.appendChild(titleDiv);
+        wrapper.appendChild(metaDiv);
+        wrapper.appendChild(detail);
+        container.appendChild(wrapper);
+
+        // ✅ Popover adjust
+        wrapper.addEventListener("mouseenter", () => {
+          const rect = wrapper.getBoundingClientRect();
+          if (rect.right + 300 > window.innerWidth) {
+            wrapper.classList.add("popover-left");
+          } else {
+            wrapper.classList.remove("popover-left");
+          }
+        });
+      });
+    }
+
+// ✅ Fetch random anime
+async function fetchAnime() {
+  try {
+    container.innerHTML = '<p style="color:#ddd; padding:20px">Loading…</p>'; // <-- add
+    let randomPage = Math.floor(Math.random() * 30) + 1;
+    const res = await fetch(`https://api.jikan.moe/v4/top/anime?page=${randomPage}`);
+    const data = await res.json();
+    displayAnime(data.data.slice(0, 20));
+  } catch (err) {
+    console.error("Error:", err);
+    container.innerHTML = '<p style="color:#f88; padding:20px">Error loading anime.</p>';
+  }
+}
+
+// ✅ Search anime
+async function searchAnime(query) {
+  try {
+    container.innerHTML = '<p style="color:#ddd; padding:20px">Loading…</p>'; // <-- add
+    const res = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&limit=20`);
+    const data = await res.json();
+    displayAnime(data.data);
+  } catch (err) {
+    console.error("Search Error:", err);
+    container.innerHTML = '<p style="color:#f88; padding:20px">Search failed.</p>';
+  }
+}
+
+
+    // ✅ Search on Enter
+    searchInput.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") {
+        const query = searchInput.value.trim();
+        if (query) {
+          searchAnime(query);
+        } else {
+          fetchAnime();
+        }
+      }
+    });
+
+    // ✅ Language toggle
+    document.getElementById("langEN").addEventListener("click", () => {
+      currentLang = "EN";
+      displayAnime(lastData);
+      setActiveLang("EN");
+    });
+    document.getElementById("langJP").addEventListener("click", () => {
+      currentLang = "JP";
+      displayAnime(lastData);
+      setActiveLang("JP");
+    });
+    document.getElementById("langRM").addEventListener("click", () => {
+      currentLang = "RM";
+      displayAnime(lastData);
+      setActiveLang("RM");
+    });
+
+    function setActiveLang(lang) {
+      document.querySelectorAll(".lang-toggle button").forEach(btn => {
+        btn.classList.remove("active");
+      });
+      document.getElementById("lang" + lang).classList.add("active");
+    }
+
+    window.addEventListener("scroll", function () {
+      const nav = document.querySelector("nav");
+      if (window.scrollY > 10) {
+        nav.classList.add("transparent");
+      } else {
+        nav.classList.remove("transparent");
+      }
+    });
+
+    // ✅ Load on page start
+    fetchAnime();
+  </script>
+
+
+
+
+
+</body>
+
+</html>

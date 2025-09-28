@@ -1,0 +1,363 @@
+    @import url('https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&display=swap');
+
+    body {
+      box-sizing: border-box;
+      background: #444;
+      font-family: 'Baloo Bhai 2', sans-serif;
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    nav {
+      background: #444;
+      padding: 10px 20px;
+      position: fixed;
+      /* top pe fix */
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      transition: background 0.3s ease;
+      /* smooth transition */
+    }
+
+    nav.transparent {
+      background: rgba(51, 51, 51, 0.4);
+      /* transparent look */
+      backdrop-filter: blur(2px);
+      /* glassy effect */
+    }
+
+    /* Navbar Flex */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Title */
+    .navbar h2 {
+      flex: 1;
+      text-align: center;
+      font-size: 44px;
+      color: #ffffff;
+      text-transform: uppercase;
+      margin: 0;
+      letter-spacing: 50px;
+    }
+
+    /* 🛠 Prevent content from hiding under navbar */
+    body {
+      padding-top: 80px;
+      /* navbar ki height ke barabar */
+    }
+
+    /* 🛠 Responsive fix for small screens */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .navbar h2 {
+        font-size: 28px;
+        letter-spacing: 10px;
+        /* mobile pe readable */
+      }
+    }
+
+
+    /* Toggle EN|JP */
+    /* Toggle EN|JP|RM */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      /* buttons ke beech ka gap */
+      margin-left: 0;
+      /* ❌ hata diya */
+      margin-right: 20px;
+      /* ✅ thoda left shift */
+    }
+
+    .lang-toggle button {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s, transform 0.2s;
+    }
+
+    .lang-toggle button:hover {
+      color: #ffd369;
+      transform: scale(1.1);
+    }
+
+    .lang-toggle button.active {
+      color: #ff9800;
+    }
+
+
+    .separator {
+      color: #fff;
+      /* white separator */
+      font-weight: 400;
+      /* halka rakha */
+      font-size: 14px;
+    }
+
+
+
+
+    /* Search Input */
+    .input-container {
+      position: relative;
+      margin: 0;
+      width: 210px;
+    }
+
+    .input-container input[type="text"] {
+      font-size: 16px;
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #aaa;
+      padding: 5px 0;
+      background-color: transparent;
+      outline: none;
+      color: #fff;
+    }
+
+    .input-container .label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #aaa;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .input-container input[type="text"]:focus~.label,
+    .input-container input[type="text"]:valid~.label {
+      top: -18px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .input-container .underline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: 100%;
+      background-color: #fff;
+      transform: scaleX(0);
+      transition: all 0.3s ease;
+    }
+
+    .input-container input[type="text"]:focus~.underline,
+    .input-container input[type="text"]:valid~.underline {
+      transform: scaleX(1);
+    }
+
+    /* Grid */
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+
+    .anime-wrapper {
+      position: relative;
+      padding: 10px;
+      overflow: visible;
+      /* Add this to contain the title properly */
+      /* Popover ke liye */
+    }
+
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      /* ✅ responsive equal width */
+      gap: 20px;
+    }
+
+    .anime-card {
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      background: #111;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      /* border: 1px solid red; */
+      /* Temporary - just to see card boundaries */
+    }
+
+    .anime-img {
+      aspect-ratio: 3 / 4;
+      /* Move aspect-ratio to image container instead */
+      overflow: hidden;
+    }
+
+    .anime-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* ✅ uniform crop */
+      display: block;
+      transition: filter 0.4s ease, transform 0.4s ease;
+    }
+
+
+    .anime-title-outside {
+      width: 100%;
+      /* wrapper ki width ke barabar */
+      max-width: 200px;
+      /* card ki fixed width ho to yaha set karo */
+      margin-top: 5px;
+      text-align: center;
+    }
+
+    .anime-title-outside h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      /* ek line me dikhaye */
+      overflow: hidden;
+      /* bahar na nikle */
+      text-overflow: ellipsis;
+      /* zyada lamba ho to ... */
+      margin: 0;
+    }
+
+    /* Meta info (Type · Duration) */
+    .anime-meta {
+      width: 100%;
+      max-width: 200px;
+      /* card ki width ke barabar */
+      margin-top: 2px;
+      text-align: center;
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    .anime-meta span {
+      display: inline-block;
+      margin: 0 4px;
+    }
+
+    .anime-meta .anime-type::after {
+      content: " ·";
+      /* type ke baad dot */
+      margin-left: 4px;
+    }
+
+    .anime-card:hover {
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Episode Overlay (top-left) */
+    .anime-episode-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 12px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px 8px;
+      border-radius: 4px;
+      z-index: 2;
+      transition: opacity 0.3s ease;
+    }
+
+    .anime-card:hover .anime-episode-overlay {
+      opacity: 0;
+    }
+
+
+
+    .anime-card:hover .anime-img img {
+      filter: blur(4px);
+      transform: scale(1.05);
+    }
+
+    /* Popover detail */
+    .anime-detail-box {
+      position: absolute;
+      top: 60%;
+      left: 105%;
+      transform: translateY(-50%);
+      width: 270px;
+      min-height: 320px;
+      background: linear-gradient(160deg, #141420 0%, #0d0d17 100%);
+      color: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s ease;
+      z-index: 10;
+    }
+
+    .anime-wrapper:hover .anime-detail-box {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .anime-detail-box .anime-name {
+      margin: 0 0 12px;
+      font-size: 20px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 6px;
+    }
+
+    .score-badge {
+      display: inline-block;
+      color: #ffffff;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 2px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .genres span {
+      display: inline-block;
+      color: #eee;
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 2px;
+      margin: 4px 4px 0 0;
+    }
+
+    .year {
+      font-size: 13px;
+      color: #bbb;
+      margin-bottom: 12px;
+    }
+
+    .synopsis {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #ddd;
+    }
+
+    /* Responsive Popover agar screen ke right side jagah na ho */
+    .anime-wrapper.popover-left .anime-detail-box {
+      left: auto;
+      right: 105%;
+    }
